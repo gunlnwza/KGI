@@ -49,13 +49,13 @@ def calculate_portfolio_value():
 
 'Minimum value': [statement_df['End Line Available'].min()],
 'Win rate': [(count_win * 100)/ count_sell],
-'Calmar Ratio': [((portfolio_df['Market Value'].sum() + last_end_line_available - initial_investment) / initial_investment * 100) / \
+'Calmar Ratio': [((portfolio_df['Market Value'].sum() + last_end_line_available - 10_000_000) / 10_000_000 * 100) / \
 						((portfolio_df['Market Value'].sum() + last_end_line_available - 10_000_000) / 10_000_000)],
 'Relative Drawdown': [(portfolio_df['Market Value'].sum() + last_end_line_available - 10_000_000) / 10_000_000 / statement_df['End Line Available'].max() * 100],
 'Maximum Drawdown': [(portfolio_df['Market Value'].sum() + last_end_line_available - 10_000_000) / 10_000_000],
 
 
-'%Return': [((portfolio_df['Market Value'].sum() + last_end_line_available - initial_investment) / initial_investment * 100)]
+'%Return': [)]
 """
 
 def calculate_summary_data(portfolio_df, statement_df):
@@ -86,14 +86,14 @@ def calculate_summary_data(portfolio_df, statement_df):
 
 	summary_data['Minimum value'].append(statement_df['End Line Available'].min())
 	summary_data['Win rate'].append((count_win / count_sell) * 100)
+	# TODO: Check Calmar Ratio, Maximum Drawdown calculation
+	return_ = (portfolio_df['Market Value'].sum() + last_end_line_available - INITIAL_INVESTMENT) / INITIAL_INVESTMENT
+	drawdown = (portfolio_df['Market Value'].sum() + last_end_line_available - INITIAL_INVESTMENT) / INITIAL_INVESTMENT
+	summary_data['Calmar Ratio'].append((return_ / drawdown) * 100)
+	summary_data['Relative Drawdown'].append((drawdown / statement_df['End Line Available'].max()) * 100)
+	summary_data['Maximum Drawdown'].append(drawdown)
 
-	calmar_ratio = ((portfolio_df['Market Value'].sum() + last_end_line_available - INITIAL_INVESTMENT) / INITIAL_INVESTMENT * 100) / \
-						((portfolio_df['Market Value'].sum() + last_end_line_available - INITIAL_INVESTMENT) / INITIAL_INVESTMENT)
-	summary_data['Calmar Ratio'].append(calmar_ratio)
-	summary_data['Relative Drawdown'].append()
-	summary_data['Maximum Drawdown'].append()
-
-	summary_data['%Return'].append()
+	summary_data['%Return'].append(return_ * 100)
 
 	return summary_data
 
