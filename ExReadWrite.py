@@ -7,7 +7,7 @@ from datetime import time
 TEAM_NAME = '013_KGI'
 
 ################################################################################
-# opening directory & setting up
+# open directory & setting up
 ################################################################################
 
 output_dir = os.path.expanduser("~/Desktop/competition_api")
@@ -34,7 +34,7 @@ def load_previous(file_type, teamName):
     
     if not os.path.exists(file_path):
         print(f"File not found: {file_path}")
-        return 
+        return None
 
     try:
         data = pd.read_csv(file_path)
@@ -42,6 +42,8 @@ def load_previous(file_type, teamName):
         return data
     except Exception as e:
         print(f"Error loading file: {e}")
+
+    return None
 
 # return initial_balance and start_line_available
 def get_initial_balance(prev_summary_df: pd.DataFrame):
@@ -150,22 +152,26 @@ summary_data = {
     'trading_day': [1],
     'NAV': [portfolio_df['Market Value'].sum() + last_end_line_available],
     'Portfolio value': [portfolio_df['Market Value'].sum()],
+    
     'End Line available': [last_end_line_available],  # Use the correct End Line Available
     'Start Line available':[start_line_available],
     'Number of wins': [count_win], 
     'Number of matched trades': [count_sell], #นับ sell เพราะ เทรดbuy sellด้วย volume เท่ากัน
     'Number of transactions:': [len(statement_df)],
+    
     'Net Amount': [statement_df['Amount Cost'].sum()],
     'Unrealized P/L': [portfolio_df['Unrealized P/L'].sum()],
     '% Unrealized P/L': [(portfolio_df['Unrealized P/L'].sum() / initial_investment * 100) if initial_investment else 0],
     'Realized P/L': [portfolio_df['Realized P/L'].sum()],
     'Maximum value': [statement_df['End Line Available'].max()],
+    
     'Minimum value': [statement_df['End Line Available'].min()],
     'Win rate': [(count_win * 100)/ count_sell],
     'Calmar Ratio': [((portfolio_df['Market Value'].sum() + last_end_line_available - initial_investment) / initial_investment * 100) / \
                            ((portfolio_df['Market Value'].sum() + last_end_line_available - 10_000_000) / 10_000_000)],
     'Relative Drawdown': [(portfolio_df['Market Value'].sum() + last_end_line_available - 10_000_000) / 10_000_000 / statement_df['End Line Available'].max() * 100],
     'Maximum Drawdown': [(portfolio_df['Market Value'].sum() + last_end_line_available - 10_000_000) / 10_000_000],
+    
     '%Return': [((portfolio_df['Market Value'].sum() + last_end_line_available - initial_investment) / initial_investment * 100)]
 }
 
